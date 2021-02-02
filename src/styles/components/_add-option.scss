@@ -1,0 +1,38 @@
+
+// Add option input
+.add-option {
+    display: flex;
+    flex-direction: column;
+    padding: $m-size;
+}
+
+// Our input form
+.add-option__input {
+    flex-grow: 1;
+    background: $byzantium;
+    border: none;
+    border-bottom: 0.3rem solid darken($byzantium, 10%);
+    color: white;
+    // margin-right: $s-size;
+    margin: 0 0 $s-size 0;
+    padding: $s-size;
+
+}
+
+// Styling our error message
+.add-option-error {
+    color: $pale-spring-bud;
+    font-style: italic;
+    padding: 0 $m-size;
+    margin: $m-size 0 0 0;
+}
+
+@media (min-width: $desktop-break-point) {
+    .add-option {
+        flex-direction: row;
+    }
+
+    .add-option__input {
+        margin: 0 $s-size 0 0;
+    }
+}

@@ -1,0 +1,26 @@
+.widget {
+    background: $mountain-pink;
+    margin-bottom: $xl-size;
+}
+
+// Widget Header
+.widget-header {
+    display: flex;
+    background-color: #4b3047;
+    color: $pale-spring-bud;
+    padding: $m-size;
+    justify-content: space-between;
+}
+
+.widget__message {
+    color: $pale-spring-bud;
+    margin: 0;
+    padding: $l-size;
+    text-align: center;
+    border-bottom: 1px solid lighten($mountain-pink, 10%);
+    font-weight: bold;
+}
+
+.widget-header__title {
+    margin: 0;
+}

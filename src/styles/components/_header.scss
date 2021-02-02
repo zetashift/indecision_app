@@ -1,0 +1,25 @@
+.header {
+    background: $dark-byzantium;
+    color: white;
+    margin-bottom: $m-size;
+    padding: $m-size 0;
+}
+
+// BEM block element modifier naming
+.header__title {
+    font-size: $l-size;
+    margin: 0;
+}
+
+.header__subtitle {
+    color: $pale-spring-bud;
+    font-size: 2.0rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+@media (min-width: $desktop-break-point) {
+    .header {
+        margin-bottom: $xl-size;
+    }
+}

@@ -1,0 +1,212 @@
+* Tooling
+*See Webpack section for the goodies!*
+
+In the beginning of the course we used /Babel/ and /LiveServer/
+However these were used as global modules, and these are bad for a number of reasons, like reproduciblity and knowing all the dependencies of a project.
+
++We are using these commands+
+
+#+begin_example
+  babel src/app.js  --out-file=public/scripts/app.js --presets=env,react --watch
+#+end_example
+
++And+
+
+#+begin_example
+  live-server public
+#+end_example
+
+* States vs Props
+
+** Props: props are like the parameters you pass to functions
+** State: State is like the variable you modify in a function
+** Changes in both cause a re-render
+
+* useEffect
+** The useEffect Hook
+
+This hook lets you perform side-effects in a function component
+#+begin_src javascript
+import React, { useState, useEffect } from "react"
+
+function Example() {
+    const [count, setCount] = useState(0)
+
+    // Replaces componentDidMount and componentDidUpdate
+    // This effect does not require any cleanup
+    useEffect(() => {
+        document.title = `You clicked ${count} times`
+    })
+    return (
+        <div>
+            <p>You clicked {count} times</p>
+            <button onClick={() => setCount(count + 1)}>
+                Click Me!
+            </button>
+        </div>
+    )
+}
+#+end_src
+
+Data fetching, setting up a subscription and manually changing the DOM are all examples of side-effects in functional components.
+Effects happen after every render and re-render, unless we specify otherwise
+
+** Effects with cleanup
+Some effects require a cleanup, like when we set up a subscription to an external data source, we need to clean up or else we might have a memory leak.
+With the =useEffect= Hook we might do it like this:
+#+begin_src javascript
+function FriendStatus(props) {
+    const [isOnline, setIsOnline] = useState(null)
+
+    useEffect(() => {
+        function handleStatusChange(status) {
+            setIsOnline(status.isOnline)
+        }
+        ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange)
+
+        // Here the effect returns a function!
+        return function cleanup() {
+           ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange)
+        }
+    })
+
+    if (isOnline === null) return "Loading"
+
+    return isOnline ? "Online" : "Offline"
+}
+
+#+end_src
+
+We return a function =cleanup= here from our effect because this is the optional cleanup mechanism in React. /Every effect may return a function that cleans up after it/
+So the logic of adding and removing a subscription are part of the same effect!
+React performs a cleanup after the component unmounts, note that effects run every render.
+
+** Skipping Effects
+In the useEffect Hook API there is a builtin way to tell React to /skip/ applying an effect if certain values haven't changed between re-renders. To do this we specify an optional second argument, which is an array.
+
+#+begin_src javascript
+useEffect(() => {
+    document.title = `You clicked ${count} times`
+}, [count]) // Now this effect will only run if count has changed
+#+end_src
+
+*NOTE: If you only want to run an effect once pass in an empty array =[]= as the second argument:
+
+#+begin_src javascript
+useEffect(() => {
+    console.log("This effect is only run once")
+}, [])
+
+#+end_src
+
+* Lifecycle Methods
+*REPLACED BY USEFFECT*
+*DO NOT USE THESE METHODS ANYMORE! THEY ARE LEGACY*
+*HOOKS ARE THE WAY FORWARD*
+** React.Component
+*** Mounting a component
+Order in which these methods are called when mounting a component
+1. =constructor()=
+2. =static getDerivedStateFromProps()=
+3. =render()=
+4. =componentDidMount()=
+
+*** Updating
+An update can be caused by changes to props or state. These methods are called in the following order
+1. =static getDerivedStateFromProps()=
+2. =shouldComponentUpdate()=
+3. =render()=
+4. =getSnapshotBeforeUpdate()=
+5. =componentDidUpdate()=
+
+*** Unmounting
+This method is called when a component is removed from the DOM
+1. =componentWillUnmount=
+
+*** Error handling
+And when an error occurs these methods are called:
+1. =static getDerivedStateFromProps=
+2. =componentDidCatch()=
+
+* LocalStorage Note
+
+LocalStorage is a simple *Key-Value* store/database to save data on the client side where it persists. This way we can fetch and save data
+*NOTE* LocalStorage only works with *String* data! We can use *JSON* to save complex objects to localStorage.
+
+#+begin_src javascript
+localStorage.setItem("name", "Rishi")
+localStorage.getItem("name") // Returns "Rishi"
+localStorage.removeItem("name") // Removes the KV-pair "name" -> "Rishi"
+
+// JSON
+const json = JSON.stringify({ age: 26 })
+JSON.parse(json) // This returns a true JSON Object
+
+#+end_src
+
+* Webpack
+
+ Webpack is an asset bundler. With webpack we can break up our application from a massive single file to multiple manageable modules.
+
+ =yarn add package_name= these will install it in the local =.node_modules= folder and thus make it easier.
+
+ A example of an minimal webpack config:
+
+ #+begin_src javascript
+const path = require("path")
+
+// We need to tell Webpack where to find the entrypoint to our code
+// and where to put it
+module.exports = {
+  entry: "./src/app.js",
+  output: {
+    path: path.join(__dirname, "public"),
+    filename: "bundle.js",
+  }
+}
+ #+end_src
+
+In this project we use =sass-loader= and =node-sass= to help Webpack transform =.scss= files into =.css= files.
+
+* Children
+
+We can use JSX like this
+
+#+begin_src jsx
+const Layout = (props) => {
+    return (
+        <div>
+            <p>Heading</p>
+            {props.content}
+            <p>Footer</p>
+        </div>
+    )
+}
+
+const template = (
+    <div>
+        <h1>Page Title</h1>
+        <p>This is content</p>
+    </div>
+)
+// Using it like HTML enclosing tags
+ReactDOM.render((
+        <Layout>
+            <p>This is inline</p>
+        </Layout>
+        ), document.getElementById(root))
+#+end_src
+
+Now to access the children(The "This is inline" part) we can use =props.children=
+#+begin_src javascript
+const Layout = (props) => {
+    return  (
+        <div>
+            <p>Heading</p>
+            {props.children}
+            <p>Footer</p>
+        </div>
+    )
+}
+
+#+end_src
