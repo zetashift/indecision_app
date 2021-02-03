@@ -106,7 +106,7 @@ useEffect(() => {
 
 * Lifecycle Methods
 *REPLACED BY USEFFECT*
-*DO NOT USE THESE METHODS ANYMORE! THEY ARE LEGACY*
+*DO NOT USE THESE METHODS ANYMORE! THEY ARE LEGACY.*
 *HOOKS ARE THE WAY FORWARD*
 ** React.Component
 *** Mounting a component
